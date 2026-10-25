@@ -1,12 +1,31 @@
 import React, { useState } from 'react';
 import { useWorkspace } from '../../context/WorkspaceContext';
-import { signInWithGoogle, signInAnonymously } from '../../lib/supabase';
-import { X, AlertCircle, Sparkles, CheckCircle2, ShieldCheck, HardDrive } from 'lucide-react';
+import {
+  signInWithGoogle,
+  signInAnonymously,
+  signInWithEmail,
+  signUpWithEmail
+} from '../../lib/supabase';
+import {
+  X,
+  AlertCircle,
+  Sparkles,
+  CheckCircle2,
+  ShieldCheck,
+  HardDrive,
+  Mail,
+  Lock
+} from 'lucide-react';
 
 export const AuthModal = () => {
   const { authModalOpen, setAuthModalOpen, user, setUser, signOut } = useWorkspace();
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
+  const [successMsg, setSuccessMsg] = useState(null);
+  const [authMethod, setAuthMethod] = useState('google'); // 'google' | 'email'
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isSignUp, setIsSignUp] = useState(false);
 
   React.useEffect(() => {
     const handleKeyDown = (e) => {
@@ -65,6 +84,36 @@ export const AuthModal = () => {
     setUser(localGuest);
     setAuthModalOpen(false);
     setLoading(false);
+  };
+
+  const handleEmailAuth = async (e) => {
+    e.preventDefault();
+    if (!email || !password) {
+      setErrorMsg('Please enter both email and password.');
+      return;
+    }
+    setLoading(true);
+    setErrorMsg(null);
+    setSuccessMsg(null);
+    try {
+      if (isSignUp) {
+        const newUser = await signUpWithEmail(email, password);
+        if (newUser) {
+          setSuccessMsg('Account created successfully! You can now log in.');
+          setIsSignUp(false);
+        }
+      } else {
+        const loggedUser = await signInWithEmail(email, password);
+        if (loggedUser) {
+          setUser(loggedUser);
+          setAuthModalOpen(false);
+        }
+      }
+    } catch (err) {
+      setErrorMsg(err.message || 'Authentication failed. Please verify your credentials.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const isGuestUser = user?.isGuest || user?.is_anonymous || user?.id?.startsWith('local-guest');
@@ -182,7 +231,7 @@ export const AuthModal = () => {
                   <span>Local Guest Workspace (Offline)</span>
                 </div>
                 <p style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.4 }}>
-                  Your workspace is stored locally in this browser. To back up to Supabase Cloud and sync across devices, connect with Google.
+                  Your workspace is stored locally in this device. To sync with Supabase Cloud, connect your account.
                 </p>
                 <button
                   onClick={handleGoogleSignIn}
@@ -234,13 +283,68 @@ export const AuthModal = () => {
         ) : (
           // Logged out / Sign-in state
           <div>
-            <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+            <div style={{ textAlign: 'center', marginBottom: '16px' }}>
               <h3 style={{ fontSize: '18px', fontWeight: 700, color: 'var(--text-primary)' }}>
                 Log in to NoteThings
               </h3>
               <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginTop: '4px' }}>
                 Sync your pages, databases, and AI agent workflows seamlessly across devices.
               </p>
+            </div>
+
+            {/* Auth Method Selector Tabs */}
+            <div
+              style={{
+                display: 'flex',
+                backgroundColor: 'var(--bg-secondary)',
+                padding: '3px',
+                borderRadius: 'var(--radius-md)',
+                marginBottom: '16px',
+                border: '1px solid var(--border-color)'
+              }}
+            >
+              <button
+                type="button"
+                onClick={() => {
+                  setAuthMethod('google');
+                  setErrorMsg(null);
+                }}
+                style={{
+                  flex: 1,
+                  padding: '6px 12px',
+                  borderRadius: 'var(--radius-sm)',
+                  border: 'none',
+                  backgroundColor: authMethod === 'google' ? 'var(--bg-card)' : 'transparent',
+                  color: authMethod === 'google' ? 'var(--text-primary)' : 'var(--text-secondary)',
+                  fontWeight: authMethod === 'google' ? 600 : 500,
+                  fontSize: '12px',
+                  boxShadow: authMethod === 'google' ? 'var(--shadow-sm)' : 'none',
+                  cursor: 'pointer'
+                }}
+              >
+                Google OAuth
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setAuthMethod('email');
+                  setErrorMsg(null);
+                }}
+                style={{
+                  flex: 1,
+                  padding: '6px 12px',
+                  borderRadius: 'var(--radius-sm)',
+                  border: 'none',
+                  backgroundColor: authMethod === 'email' ? 'var(--bg-card)' : 'transparent',
+                  color: authMethod === 'email' ? 'var(--text-primary)' : 'var(--text-secondary)',
+                  fontWeight: authMethod === 'email' ? 600 : 500,
+                  fontSize: '12px',
+                  boxShadow: authMethod === 'email' ? 'var(--shadow-sm)' : 'none',
+                  cursor: 'pointer'
+                }}
+              >
+                Email & Password
+              </button>
             </div>
 
             {errorMsg && (
@@ -264,42 +368,157 @@ export const AuthModal = () => {
               </div>
             )}
 
-            {/* Official Google Sign-in Button */}
-            <button
-              onClick={handleGoogleSignIn}
-              disabled={loading}
-              style={{
-                width: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '12px',
-                padding: '10px 16px',
-                borderRadius: 'var(--radius-sm)',
-                backgroundColor: 'var(--bg-card)',
-                border: '1px solid var(--border-color)',
-                color: 'var(--text-primary)',
-                fontWeight: 600,
-                fontSize: '14px',
-                boxShadow: 'var(--shadow-sm)',
-                transition: 'background-color var(--transition-fast), border-color var(--transition-fast)',
-                cursor: loading ? 'not-allowed' : 'pointer'
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--bg-hover)')}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'var(--bg-card)')}
-            >
-              {/* Google 4-color SVG Icon */}
-              <svg width="18" height="18" viewBox="0 0 48 48">
-                <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
-                <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
-                <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" />
-                <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
-              </svg>
-              <span>{loading ? 'Connecting to Google...' : 'Continue with Google'}</span>
-            </button>
+            {successMsg && (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '10px 12px',
+                  borderRadius: 'var(--radius-sm)',
+                  backgroundColor: 'var(--accent-green-bg)',
+                  border: '1px solid rgba(68, 131, 97, 0.2)',
+                  fontSize: '12px',
+                  color: 'var(--accent-green)',
+                  marginBottom: '16px'
+                }}
+              >
+                <CheckCircle2 size={15} />
+                <span>{successMsg}</span>
+              </div>
+            )}
+
+            {authMethod === 'google' ? (
+              /* Google Sign-in */
+              <div>
+                <button
+                  onClick={handleGoogleSignIn}
+                  disabled={loading}
+                  style={{
+                    width: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '12px',
+                    padding: '10px 16px',
+                    borderRadius: 'var(--radius-sm)',
+                    backgroundColor: 'var(--bg-card)',
+                    border: '1px solid var(--border-color)',
+                    color: 'var(--text-primary)',
+                    fontWeight: 600,
+                    fontSize: '14px',
+                    boxShadow: 'var(--shadow-sm)',
+                    transition: 'background-color var(--transition-fast), border-color var(--transition-fast)',
+                    cursor: loading ? 'not-allowed' : 'pointer'
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--bg-hover)')}
+                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'var(--bg-card)')}
+                >
+                  <svg width="18" height="18" viewBox="0 0 48 48">
+                    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
+                    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
+                    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" />
+                    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
+                  </svg>
+                  <span>{loading ? 'Connecting to Google...' : 'Continue with Google'}</span>
+                </button>
+              </div>
+            ) : (
+              /* Direct Email & Password */
+              <form onSubmit={handleEmailAuth} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <div style={{ position: 'relative' }}>
+                  <Mail
+                    size={16}
+                    color="var(--text-muted)"
+                    style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)' }}
+                  />
+                  <input
+                    type="email"
+                    placeholder="Enter your email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    style={{
+                      width: '100%',
+                      padding: '8px 12px 8px 34px',
+                      borderRadius: 'var(--radius-sm)',
+                      border: '1px solid var(--border-color)',
+                      backgroundColor: 'var(--bg-primary)',
+                      color: 'var(--text-primary)',
+                      fontSize: '13px'
+                    }}
+                  />
+                </div>
+                <div style={{ position: 'relative' }}>
+                  <Lock
+                    size={16}
+                    color="var(--text-muted)"
+                    style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)' }}
+                  />
+                  <input
+                    type="password"
+                    placeholder="Password (min 6 characters)"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    minLength={6}
+                    style={{
+                      width: '100%',
+                      padding: '8px 12px 8px 34px',
+                      borderRadius: 'var(--radius-sm)',
+                      border: '1px solid var(--border-color)',
+                      backgroundColor: 'var(--bg-primary)',
+                      color: 'var(--text-primary)',
+                      fontSize: '13px'
+                    }}
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  style={{
+                    width: '100%',
+                    padding: '9px 16px',
+                    borderRadius: 'var(--radius-sm)',
+                    backgroundColor: 'var(--accent-blue)',
+                    color: '#fff',
+                    border: 'none',
+                    fontWeight: 600,
+                    fontSize: '13px',
+                    cursor: loading ? 'not-allowed' : 'pointer',
+                    marginTop: '4px'
+                  }}
+                >
+                  {loading
+                    ? 'Processing...'
+                    : isSignUp
+                    ? 'Create Free Account'
+                    : 'Sign In to Workspace'}
+                </button>
+                <div style={{ textAlign: 'center', marginTop: '2px' }}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsSignUp(!isSignUp);
+                      setErrorMsg(null);
+                    }}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: 'var(--accent-blue)',
+                      fontSize: '12px',
+                      cursor: 'pointer',
+                      padding: '2px 4px'
+                    }}
+                  >
+                    {isSignUp ? 'Already have an account? Sign in' : "Don't have an account? Sign up"}
+                  </button>
+                </div>
+              </form>
+            )}
 
             {/* Offline Guest Option */}
-            <div style={{ margin: '16px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div style={{ margin: '14px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <div style={{ flex: 1, height: '1px', backgroundColor: 'var(--border-subtle)' }} />
               <span style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>or offline</span>
               <div style={{ flex: 1, height: '1px', backgroundColor: 'var(--border-subtle)' }} />
@@ -335,7 +554,7 @@ export const AuthModal = () => {
               <span>Continue in Local Guest Mode</span>
             </button>
 
-            <div style={{ fontSize: '11px', color: 'var(--text-muted)', textAlign: 'center', marginTop: '16px' }}>
+            <div style={{ fontSize: '11px', color: 'var(--text-muted)', textAlign: 'center', marginTop: '14px' }}>
               By continuing, you agree to NoteThings Terms of Service and Privacy Policy.
             </div>
           </div>

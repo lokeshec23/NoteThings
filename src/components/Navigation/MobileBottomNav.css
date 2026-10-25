@@ -1,0 +1,113 @@
+/* ==========================================================================
+   Mobile Bottom Navigation Bar
+   Docked at the bottom on mobile devices for ergonomic thumb navigation
+   ========================================================================== */
+
+.mobile-bottom-nav {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-bottom-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: calc(58px + env(safe-area-inset-bottom, 0px));
+    padding: 4px 8px max(4px, env(safe-area-inset-bottom, 0px));
+    background-color: var(--bg-card);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid var(--border-color);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.04);
+    z-index: 45;
+    user-select: none;
+  }
+
+  .mobile-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    padding: 4px 0;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    transition: color var(--transition-fast), transform var(--transition-fast);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .mobile-nav-item:active {
+    transform: scale(0.92);
+    color: var(--text-primary);
+  }
+
+  .mobile-nav-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+  }
+
+  .mobile-nav-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1.5px solid var(--accent-blue);
+  }
+
+  .mobile-nav-label {
+    font-size: 10.5px;
+    font-weight: 500;
+    line-height: 1.2;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+
+  /* Center "+" Action Button */
+  .mobile-nav-add-btn .mobile-nav-add-circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent-blue) 0%, #1d4ed8 100%);
+    box-shadow: 0 2px 8px rgba(35, 131, 226, 0.4);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  }
+
+  .mobile-nav-add-btn:active .mobile-nav-add-circle {
+    transform: scale(0.9);
+    box-shadow: 0 1px 4px rgba(35, 131, 226, 0.3);
+  }
+
+  .mobile-nav-add-btn .mobile-nav-label {
+    color: var(--accent-blue);
+    font-weight: 600;
+  }
+
+  /* Notion AI Item */
+  .mobile-nav-ai-item .ai-sparkle-icon {
+    color: var(--accent-purple);
+  }
+
+  .mobile-nav-ai-item .ai-label {
+    background: var(--ai-gradient-text);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 600;
+  }
+}

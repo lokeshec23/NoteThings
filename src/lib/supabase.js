@@ -1,4 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
+import { Capacitor } from '@capacitor/core';
+import { Browser } from '@capacitor/browser';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -13,19 +15,60 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // ==================== AUTHENTICATION ====================
 
-// Sign in with Google OAuth via Supabase
+// Sign in with Google OAuth via Supabase (handles Web & Mobile APK)
 export const signInWithGoogle = async () => {
   try {
+    const isNative = Capacitor.isNativePlatform();
+    // On native mobile APK, redirect to custom deep link scheme so Android opens the app
+    const redirectUrl = isNative
+      ? 'com.notethings.app://login-callback'
+      : window.location.origin;
+
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: window.location.origin
+        redirectTo: redirectUrl,
+        skipBrowserRedirect: isNative
       }
     });
     if (error) throw error;
+
+    if (isNative && data?.url) {
+      await Browser.open({ url: data.url, windowName: '_system' });
+    }
     return data;
   } catch (err) {
     console.error('Google sign in error:', err);
+    throw err;
+  }
+};
+
+// Sign in with Email and Password (works directly without redirects)
+export const signInWithEmail = async (email, password) => {
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+    if (error) throw error;
+    return data.user;
+  } catch (err) {
+    console.error('Email sign in error:', err);
+    throw err;
+  }
+};
+
+// Sign up with Email and Password
+export const signUpWithEmail = async (email, password) => {
+  try {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password
+    });
+    if (error) throw error;
+    return data.user;
+  } catch (err) {
+    console.error('Email sign up error:', err);
     throw err;
   }
 };

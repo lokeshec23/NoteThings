@@ -1,15 +1,18 @@
 .header-container {
-  height: var(--header-height);
+  min-height: calc(var(--header-height) + env(safe-area-inset-top, 0px));
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 16px;
   background-color: var(--bg-primary);
   border-bottom: 1px solid var(--border-subtle);
   user-select: none;
   z-index: 10;
   flex-shrink: 0;
+  box-sizing: border-box;
 }
 
 .header-left {
@@ -104,16 +107,20 @@
 /* Responsive Header Breakpoints */
 @media (max-width: 768px) {
   .header-container {
-    padding: 0 12px;
+    padding-left: max(12px, env(safe-area-inset-left, 0px));
+    padding-right: max(12px, env(safe-area-inset-right, 0px));
+    padding-top: max(4px, env(safe-area-inset-top, 0px));
+    min-height: calc(52px + env(safe-area-inset-top, 0px));
   }
 
   .header-btn {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
   }
 
   .header-pill-btn {
-    min-height: 30px;
+    min-height: 34px;
+    padding: 6px 10px;
   }
 }
 
