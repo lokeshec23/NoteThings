@@ -1,0 +1,8 @@
+{
+  "appId": "com.notethings.app",
+  "appName": "NoteThings",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  }
+}
