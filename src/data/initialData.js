@@ -26,6 +26,11 @@ export const INITIAL_PAGES = [
         content: 'The AI workspace that works for you'
       },
       {
+        id: 'b-toc',
+        type: 'toc',
+        content: ''
+      },
+      {
         id: 'b-3',
         type: 'text',
         content: 'NoteThings treats every piece of information as an autonomous **Block**. Paragraphs, headings, code snippets, checklists, and even embedded databases can be edited, reorganized, and converted dynamically.'
@@ -83,6 +88,29 @@ export const INITIAL_PAGES = [
         id: 'b-11',
         type: 'quote',
         content: '"Simplicity is the prerequisite for reliability." — Edsger W. Dijkstra'
+      },
+      {
+        id: 'b-media-heading',
+        type: 'h2',
+        content: '🖼️ Media, Bookmarks & Math Equations'
+      },
+      {
+        id: 'b-bookmark-1',
+        type: 'bookmark',
+        url: 'https://notion.so',
+        title: 'Notion – Connected Workspace',
+        desc: 'A new tool that blends your everyday work apps into one. It is the all-in-one workspace for you and your team.'
+      },
+      {
+        id: 'b-image-1',
+        type: 'image',
+        url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80',
+        caption: 'Design aesthetics inspired by modern minimalist architecture.'
+      },
+      {
+        id: 'b-math-1',
+        type: 'math',
+        content: 'E = mc^2 \\quad \\text{and} \\quad f(x) = \\int_{-\\infty}^\\infty e^{-x^2} dx'
       },
       {
         id: 'b-12',

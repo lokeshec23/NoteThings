@@ -1,5 +1,6 @@
 /* ==========================================================================
-   Multi-View Relational Database Styles (Table, Board, List, Gallery, Calendar)
+   Notion Table & Multi-View Relational Database Styles
+   Exact replica of Notion database architecture, view settings & drawer
    ========================================================================== */
 
 .database-container {
@@ -9,10 +10,13 @@
   background-color: var(--bg-card);
   overflow: hidden;
   box-shadow: var(--shadow-sm);
+  position: relative;
 }
 
-/* Database Header & View Tabs */
-.database-header {
+/* ==========================================================================
+   TOP BAR: Views Tab Pills, Search, Sliders & Blue Split New Button
+   ========================================================================== */
+.database-top-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -23,22 +27,20 @@
   flex-wrap: wrap;
 }
 
-.view-tabs {
+.db-views-tab-group {
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 3px;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  max-width: 100%;
-  padding-bottom: 2px;
 }
 
-.view-tabs::-webkit-scrollbar {
+.db-views-tab-group::-webkit-scrollbar {
   display: none;
 }
 
-.view-tab {
+.db-view-pill {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -48,27 +50,29 @@
   font-weight: 500;
   color: var(--text-secondary);
   transition: all var(--transition-fast);
-  flex-shrink: 0;
+  background: transparent;
   white-space: nowrap;
 }
 
-.view-tab:hover {
+.db-view-pill:hover {
   background-color: var(--bg-hover);
   color: var(--text-primary);
 }
 
-.view-tab.active {
+.db-view-pill.active {
   background-color: var(--bg-primary);
   color: var(--text-primary);
   box-shadow: var(--shadow-sm);
   font-weight: 600;
+  border: 1px solid var(--border-subtle);
 }
 
-.database-actions {
+.database-top-actions {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   margin-left: auto;
+  position: relative;
 }
 
 .db-search-input {
@@ -76,59 +80,116 @@
   border-radius: var(--radius-xs);
   border: 1px solid var(--border-color);
   background-color: var(--bg-primary);
+  color: var(--text-primary);
   font-size: 12px;
-  width: 130px;
+  width: 140px;
   transition: width var(--transition-fast);
+  outline: none;
 }
 
 .db-search-input:focus {
-  width: 170px;
+  width: 180px;
   border-color: var(--accent-blue);
 }
 
-.db-new-btn {
-  background-color: var(--accent-blue);
-  color: #fff;
-  padding: 4px 10px;
+/* Notion Signature Sliders Button (Matches Screenshot) */
+.db-sliders-btn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: var(--radius-xs);
-  font-size: 12px;
-  font-weight: 500;
-  gap: 4px;
-  flex-shrink: 0;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-primary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
 }
 
-.db-new-btn:hover {
+.db-sliders-btn:hover,
+.db-sliders-btn.active {
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+  border-color: var(--text-secondary);
+}
+
+/* Notion Signature Blue Split Button: [New | ∨] (Matches Screenshot) */
+.db-split-new-btn-group {
+  display: flex;
+  align-items: center;
+  background-color: var(--accent-blue);
+  color: #fff;
+  border-radius: var(--radius-xs);
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(35, 131, 226, 0.25);
+  position: relative;
+}
+
+.db-split-new-primary {
+  padding: 5px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+  background: transparent;
+  cursor: pointer;
+  border: none;
+  transition: background-color var(--transition-fast);
+}
+
+.db-split-new-primary:hover {
   background-color: var(--accent-blue-hover);
 }
 
-@media (max-width: 600px) {
-  .database-header {
-    flex-direction: column;
-    align-items: stretch;
-    padding: 8px 10px;
-    gap: 8px;
-  }
-
-  .view-tabs {
-    width: 100%;
-  }
-
-  .database-actions {
-    width: 100%;
-    margin-left: 0;
-  }
-
-  .db-search-input {
-    flex: 1;
-    width: auto !important;
-  }
-
-  .db-search-input:focus {
-    width: auto !important;
-  }
+.db-split-new-dropdown {
+  padding: 5px 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.85);
+  background: transparent;
+  cursor: pointer;
+  border: none;
+  border-left: 1px solid rgba(255, 255, 255, 0.25);
+  transition: background-color var(--transition-fast);
 }
 
-/* TABLE VIEW */
+.db-split-new-dropdown:hover {
+  background-color: var(--accent-blue-hover);
+  color: #fff;
+}
+
+/* ==========================================================================
+   QUICK FILTER & SORT BAR
+   ========================================================================== */
+.db-filter-sort-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 12px;
+  background-color: var(--bg-primary);
+  border-bottom: 1px solid var(--border-subtle);
+  flex-wrap: wrap;
+}
+
+.db-toolbar-select {
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: var(--radius-xs);
+  outline: none;
+  cursor: pointer;
+}
+
+.db-toolbar-select:focus {
+  border-color: var(--accent-blue);
+}
+
+/* ==========================================================================
+   TABLE VIEW & COLUMNS
+   ========================================================================== */
 .db-table-wrapper {
   overflow-x: auto;
   width: 100%;
@@ -142,7 +203,7 @@
 }
 
 .db-table th {
-  padding: 8px 12px;
+  padding: 7px 10px;
   background-color: var(--bg-secondary);
   color: var(--text-muted);
   font-weight: 500;
@@ -152,15 +213,62 @@
   white-space: nowrap;
 }
 
+.db-th-clickable {
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.db-th-clickable:hover {
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.th-content-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.prop-icon-aa {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.th-add-property {
+  width: 130px;
+  padding: 0 !important;
+}
+
+.th-add-prop-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 7px 10px;
+  font-size: 12px;
+  color: var(--text-muted);
+  background: transparent;
+  cursor: pointer;
+  border: none;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.th-add-prop-btn:hover {
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+}
+
 .db-table td {
-  padding: 8px 12px;
+  padding: 6px 10px;
   border-bottom: 1px solid var(--border-subtle);
   border-right: 1px solid var(--border-subtle);
   color: var(--text-primary);
   vertical-align: middle;
 }
 
-.db-table tr:hover td {
+.db-table tr.db-table-row:hover td {
   background-color: var(--bg-hover);
 }
 
@@ -169,10 +277,162 @@
   font-size: 13px;
   border: none;
   background: transparent;
+  color: var(--text-primary);
   outline: none;
 }
 
-/* Pill Selectors */
+.title-cell-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  position: relative;
+}
+
+.title-input {
+  font-weight: 500;
+}
+
+/* Notion Signature OPEN Peek Button on Hover */
+.row-open-peek-btn {
+  display: none;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--accent-blue);
+  background-color: var(--accent-blue-bg);
+  border: 1px solid rgba(35, 131, 226, 0.3);
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.db-table-row:hover .row-open-peek-btn {
+  display: inline-flex;
+}
+
+.row-hover-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+  margin-left: auto;
+}
+
+.db-table-row:hover .row-hover-actions {
+  opacity: 1;
+}
+
+.row-subitem-toggle-btn {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+  border-radius: var(--radius-xs);
+}
+
+.row-subitem-toggle-btn:hover {
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.row-add-subitem-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 6px;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.row-add-subitem-btn:hover {
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+  border-color: var(--accent-blue);
+}
+
+.db-subitem-row td {
+  background-color: rgba(255, 255, 255, 0.015);
+}
+
+.row-trash-btn {
+  opacity: 0;
+  width: 22px;
+  height: 22px;
+  transition: opacity var(--transition-fast);
+}
+
+.db-table-row:hover .row-trash-btn {
+  opacity: 1;
+}
+
+/* Notion Bottom '+ New page' Row (Matches Screenshot) */
+.db-new-page-inline-row {
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.db-new-page-inline-row:hover td {
+  background-color: var(--bg-hover);
+}
+
+.new-page-inline-content {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.db-new-page-inline-row:hover .new-page-inline-content {
+  color: var(--text-primary);
+}
+
+/* Notion Calculation Bar */
+.db-calculate-row {
+  background-color: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+}
+
+.db-calculate-row td {
+  padding: 6px 10px;
+  font-size: 11px;
+}
+
+.calc-pill-interactive {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 500;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: var(--radius-xs);
+  display: inline-block;
+  transition: all var(--transition-fast);
+}
+
+.calc-pill-interactive:hover {
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+/* Pill Badges */
 .status-pill {
   display: inline-flex;
   align-items: center;
@@ -204,72 +464,488 @@
 .priority-medium { background: var(--accent-yellow-bg); color: var(--accent-yellow); }
 .priority-low { background: var(--bg-hover); color: var(--text-muted); }
 
-/* BOARD (KANBAN) VIEW */
+/* ==========================================================================
+   NOTION VIEW SETTINGS SIDE DRAWER (Exact Replica of Screenshot)
+   ========================================================================== */
+.view-settings-drawer-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(1px);
+  z-index: 10000;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.view-settings-drawer {
+  width: 320px;
+  max-width: 90vw;
+  height: 100vh;
+  background-color: #191919;
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.45);
+  display: flex;
+  flex-direction: column;
+  padding: 14px 16px;
+  overflow-y: auto;
+  color: #e6e6e6;
+}
+
+.vs-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.vs-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.vs-close-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: var(--radius-xs);
+}
+
+.vs-close-btn:hover {
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+/* View Name Field */
+.vs-name-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background-color: #202020;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: var(--radius-xs);
+  margin-bottom: 14px;
+}
+
+.vs-view-icon {
+  color: #888888;
+  display: flex;
+  align-items: center;
+}
+
+.vs-name-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  font-size: 13px;
+  color: #eeeeee;
+  outline: none;
+}
+
+.vs-info-icon {
+  color: #666666;
+  cursor: help;
+}
+
+/* Settings Menu Items */
+.vs-menu-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.vs-menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  color: #d4d4d4;
+  font-size: 13px;
+  transition: background-color var(--transition-fast);
+}
+
+.vs-menu-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+}
+
+.vs-item-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-primary);
+}
+
+.vs-item-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-muted);
+}
+
+.vs-item-value {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.vs-section-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin: 18px 0 6px 8px;
+}
+
+.vs-divider {
+  height: 1px;
+  background-color: var(--border-subtle);
+  margin: 12px 0;
+}
+
+.vs-submenu-box {
+  padding: 8px 12px;
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-xs);
+  margin: 4px 0 6px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.vs-submenu-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  font-size: 12px;
+  border-radius: var(--radius-xs);
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+}
+
+.vs-submenu-btn:hover,
+.vs-submenu-btn.active {
+  background-color: var(--bg-hover);
+}
+
+.vs-prop-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.vs-prop-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 6px;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+}
+
+.vs-prop-toggle-row:hover {
+  background-color: var(--bg-hover);
+}
+
+.vs-prop-name {
+  font-size: 12px;
+  color: var(--text-primary);
+}
+
+.vs-property-edit-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+/* ==========================================================================
+   ADD PROPERTY POPOVER
+   ========================================================================== */
+.add-property-popover {
+  position: absolute;
+  top: 90px;
+  right: 20px;
+  width: 260px;
+  max-height: 380px;
+  overflow-y: auto;
+  background-color: var(--bg-floating);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-floating);
+  border-radius: var(--radius-md);
+  padding: 8px;
+  z-index: 10000;
+}
+
+.add-prop-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 6px;
+}
+
+.add-prop-name-input {
+  flex: 1;
+  padding: 5px 8px;
+  font-size: 12px;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  border-radius: var(--radius-xs);
+  outline: none;
+}
+
+.add-prop-name-input:focus {
+  border-color: var(--accent-blue);
+}
+
+.add-prop-close-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.add-prop-list-title {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 4px 6px;
+}
+
+.add-prop-type-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 5px 8px;
+  border-radius: var(--radius-xs);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color var(--transition-fast);
+}
+
+.add-prop-type-item:hover,
+.add-prop-type-item.selected {
+  background-color: var(--bg-hover);
+}
+
+.add-prop-icon {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-xs);
+  color: var(--text-primary);
+  flex-shrink: 0;
+}
+
+.add-prop-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.add-prop-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.add-prop-desc {
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   COLUMN HEADER MENU & CALCULATE MENU
+   ========================================================================== */
+.column-header-menu {
+  position: absolute;
+  top: 90px;
+  left: 40px;
+  width: 200px;
+  background-color: var(--bg-floating);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-floating);
+  border-radius: var(--radius-sm);
+  padding: 6px;
+  z-index: 10000;
+}
+
+.col-rename-box {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px;
+  margin-bottom: 4px;
+}
+
+.col-rename-input {
+  border: 1px solid var(--accent-blue) !important;
+  border-radius: var(--radius-xs);
+  padding: 4px 6px;
+  background-color: var(--bg-primary);
+}
+
+.col-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 8px;
+  font-size: 12px;
+  border-radius: var(--radius-xs);
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  text-align: left;
+}
+
+.col-menu-item:hover {
+  background-color: var(--bg-hover);
+}
+
+.col-menu-danger {
+  color: var(--accent-red) !important;
+}
+
+.col-menu-divider {
+  height: 1px;
+  background-color: var(--border-subtle);
+  margin: 4px 0;
+}
+
+.calculate-menu {
+  position: absolute;
+  bottom: 40px;
+  left: 60px;
+  width: 170px;
+  max-height: 240px;
+  overflow-y: auto;
+  background-color: var(--bg-floating);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-floating);
+  border-radius: var(--radius-sm);
+  padding: 6px;
+  z-index: 10000;
+}
+
+.calc-menu-title {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 4px 6px;
+}
+
+.calc-menu-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 5px 8px;
+  font-size: 12px;
+  border-radius: var(--radius-xs);
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  text-align: left;
+}
+
+.calc-menu-item:hover,
+.calc-menu-item.active {
+  background-color: var(--bg-hover);
+}
+
+/* ==========================================================================
+   OTHER VIEWS (BOARD, LIST, GALLERY, CALENDAR)
+   ========================================================================== */
 .db-board-wrapper {
   display: flex;
-  gap: 12px;
-  padding: 12px;
+  gap: 16px;
+  padding: 16px;
   overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  min-height: 360px;
-  background-color: var(--bg-secondary);
 }
 
 .board-column {
-  flex: 0 0 clamp(220px, 75vw, 250px);
+  min-width: 250px;
+  max-width: 280px;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  padding: 10px;
 }
 
 .board-column-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 4px 6px;
+  padding-bottom: 6px;
 }
 
 .board-card {
   background-color: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
-  padding: 10px 12px;
-  box-shadow: var(--shadow-sm);
+  padding: 10px;
   cursor: pointer;
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
   display: flex;
   flex-direction: column;
   gap: 8px;
+  transition: box-shadow var(--transition-fast), border-color var(--transition-fast);
 }
 
 .board-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-sm);
+  border-color: var(--accent-blue);
 }
 
 .board-card-title {
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--text-primary);
-  line-height: 1.4;
 }
 
 .board-card-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 4px;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 6px;
 }
 
 .board-add-card-btn {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 8px;
-  border-radius: var(--radius-sm);
+  padding: 6px 10px;
   font-size: 12px;
   color: var(--text-muted);
-  width: 100%;
+  background: transparent;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
 }
 
 .board-add-card-btn:hover {
@@ -277,23 +953,23 @@
   color: var(--text-primary);
 }
 
-/* LIST VIEW */
 .db-list-wrapper {
+  padding: 12px 16px;
   display: flex;
   flex-direction: column;
-  padding: 6px 10px;
+  gap: 4px;
 }
 
 .list-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 10px;
+  padding: 8px 12px;
   border-radius: var(--radius-xs);
+  border: 1px solid var(--border-subtle);
+  background-color: var(--bg-card);
+  cursor: pointer;
   transition: background-color var(--transition-fast);
-  border-bottom: 1px solid var(--border-subtle);
-  gap: 8px;
-  flex-wrap: wrap;
 }
 
 .list-row:hover {
@@ -301,38 +977,31 @@
 }
 
 .list-row-title {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-primary);
   display: flex;
   align-items: center;
   gap: 8px;
-  min-width: 140px;
-  flex: 1 1 180px;
+  font-size: 13px;
+  font-weight: 500;
 }
 
 .list-row-meta {
   display: flex;
   align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-  margin-left: auto;
+  gap: 8px;
 }
 
-/* GALLERY VIEW */
 .db-gallery-wrapper {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
-  gap: 12px;
-  padding: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  padding: 16px;
 }
 
 .gallery-card {
-  background-color: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   overflow: hidden;
-  box-shadow: var(--shadow-sm);
+  background-color: var(--bg-card);
   cursor: pointer;
   transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
@@ -344,9 +1013,8 @@
 
 .gallery-cover {
   width: 100%;
-  height: 110px;
+  height: 120px;
   object-fit: cover;
-  background-color: var(--bg-hover);
 }
 
 .gallery-content {
@@ -356,11 +1024,9 @@
   gap: 6px;
 }
 
-/* CALENDAR VIEW */
 .db-calendar-wrapper {
   padding: 12px;
   overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
 }
 
 .calendar-grid {
@@ -388,6 +1054,7 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
+  cursor: pointer;
 }
 
 .calendar-day-number {
@@ -406,4 +1073,5 @@
   overflow: hidden;
   text-overflow: ellipsis;
   font-weight: 500;
+  cursor: pointer;
 }

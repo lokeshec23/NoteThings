@@ -327,6 +327,75 @@ export const WorkspaceProvider = ({ children }) => {
     );
   };
 
+  const turnIntoBlock = (pageId, blockId, newType, extraProps = {}) => {
+    setPages((prev) =>
+      prev.map((p) => {
+        if (p.id !== pageId) return p;
+        const newBlocks = p.blocks.map((b) => {
+          if (b.id !== blockId) return b;
+          return {
+            ...b,
+            type: newType,
+            ...extraProps,
+            updatedAt: Date.now()
+          };
+        });
+        return { ...p, blocks: newBlocks, updatedAt: Date.now() };
+      })
+    );
+  };
+
+  const duplicateBlock = (pageId, blockId) => {
+    setPages((prev) =>
+      prev.map((p) => {
+        if (p.id !== pageId) return p;
+        const idx = p.blocks.findIndex((b) => b.id === blockId);
+        if (idx === -1) return p;
+        const source = p.blocks[idx];
+        const copy = {
+          ...JSON.parse(JSON.stringify(source)),
+          id: 'b-' + Math.random().toString(36).substr(2, 9)
+        };
+        const newBlocks = [...p.blocks];
+        newBlocks.splice(idx + 1, 0, copy);
+        return { ...p, blocks: newBlocks, updatedAt: Date.now() };
+      })
+    );
+  };
+
+  const setBlockColor = (pageId, blockId, color, isBg = false) => {
+    setPages((prev) =>
+      prev.map((p) => {
+        if (p.id !== pageId) return p;
+        const newBlocks = p.blocks.map((b) => {
+          if (b.id !== blockId) return b;
+          return isBg ? { ...b, bgColor: color } : { ...b, color };
+        });
+        return { ...p, blocks: newBlocks, updatedAt: Date.now() };
+      })
+    );
+  };
+
+  const insertAiContent = (pageId, content, type = 'callout') => {
+    const newBlock = {
+      id: 'b-' + Math.random().toString(36).substr(2, 9),
+      type,
+      content,
+      icon: '✨',
+      color: 'purple'
+    };
+    setPages((prev) =>
+      prev.map((p) => {
+        if (p.id !== pageId) return p;
+        return {
+          ...p,
+          blocks: [newBlock, ...p.blocks],
+          updatedAt: Date.now()
+        };
+      })
+    );
+  };
+
   // Database Operations
   const updateDatabaseRow = (dbId, rowId, cellUpdates) => {
     setDatabases((prev) => {
@@ -339,14 +408,15 @@ export const WorkspaceProvider = ({ children }) => {
     });
   };
 
-  const addDatabaseRow = (dbId, initialCells = {}) => {
+  const addDatabaseRow = (dbId, initialCells = {}, parentId = null) => {
     setDatabases((prev) => {
       const db = prev[dbId];
       if (!db) return prev;
       const newRow = {
-        id: 'row-' + Date.now(),
+        id: 'row-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
+        parentId: parentId || null,
         cells: {
-          'prop-title': 'New Item',
+          'prop-title': parentId ? 'Sub-task' : 'New Item',
           'prop-status': 'Not Started',
           'prop-priority': 'Medium',
           'prop-date': new Date().toISOString().split('T')[0],
@@ -354,6 +424,89 @@ export const WorkspaceProvider = ({ children }) => {
         }
       };
       return { ...prev, [dbId]: { ...db, rows: [...db.rows, newRow] } };
+    });
+  };
+
+  const createDatabase = (title = 'New database', layout = 'table') => {
+    const newDbId = 'db-' + Date.now();
+    const isForm = layout === 'form';
+    const newDatabase = {
+      id: newDbId,
+      title,
+      activeView: isForm ? 'form' : layout,
+      isForm,
+      formDescription: isForm ? 'Fill out this form to submit your response.' : '',
+      properties: isForm
+        ? [
+            { id: 'prop-title', name: 'Question 1', type: 'title' },
+            { id: 'prop-q2', name: 'Question 2', type: 'multi-select', options: ['Option 1', 'Option 2', 'Option 3'] },
+            { id: 'prop-respondent', name: 'Respondent', type: 'text' },
+            { id: 'prop-time', name: 'Submission time', type: 'date' }
+          ]
+        : [
+            { id: 'prop-title', name: 'Task / Item', type: 'title' },
+            { id: 'prop-status', name: 'Status', type: 'status' },
+            { id: 'prop-priority', name: 'Priority', type: 'select' },
+            { id: 'prop-assignee', name: 'Assignee', type: 'text' },
+            { id: 'prop-date', name: 'Target Date', type: 'date' }
+          ],
+      rows: isForm
+        ? [
+            {
+              id: 'row-resp-1',
+              parentId: null,
+              cells: {
+                'prop-title': 'Great experience, intuitive navigation',
+                'prop-q2': 'Option 1',
+                'prop-respondent': 'Alex Chen',
+                'prop-time': new Date().toISOString().split('T')[0]
+              }
+            }
+          ]
+        : [
+            {
+              id: 'row-init-1',
+              parentId: null,
+              cells: {
+                'prop-title': 'Initial research & roadmap kickoff',
+                'prop-status': 'Done',
+                'prop-priority': 'High',
+                'prop-assignee': 'You',
+                'prop-date': new Date().toISOString().split('T')[0]
+              }
+            },
+            {
+              id: 'row-init-2',
+              parentId: null,
+              cells: {
+                'prop-title': 'Core implementation & database setup',
+                'prop-status': 'In Progress',
+                'prop-priority': 'Urgent',
+                'prop-assignee': 'You',
+                'prop-date': new Date().toISOString().split('T')[0]
+              }
+            }
+          ]
+    };
+
+    setDatabases((prev) => ({ ...prev, [newDbId]: newDatabase }));
+    return newDbId;
+  };
+
+  const submitFormResponse = (dbId, responseCells) => {
+    const newRow = {
+      id: 'row-resp-' + Date.now(),
+      parentId: null,
+      cells: {
+        'prop-respondent': 'Anonymous Respondent',
+        'prop-time': new Date().toISOString().split('T')[0],
+        ...responseCells
+      }
+    };
+    setDatabases((prev) => {
+      const db = prev[dbId];
+      if (!db) return prev;
+      return { ...prev, [dbId]: { ...db, rows: [...(db.rows || []), newRow] } };
     });
   };
 
@@ -373,7 +526,7 @@ export const WorkspaceProvider = ({ children }) => {
     });
   };
 
-  const addDatabaseProperty = (dbId, propertyName, propertyType = 'text') => {
+  const addDatabaseProperty = (dbId, propertyName, propertyType = 'text', options = undefined) => {
     setDatabases((prev) => {
       const db = prev[dbId];
       if (!db) return prev;
@@ -381,9 +534,57 @@ export const WorkspaceProvider = ({ children }) => {
         id: 'prop-' + Date.now(),
         name: propertyName,
         type: propertyType,
-        options: propertyType === 'select' ? ['Default'] : undefined
+        options: options || (propertyType === 'select' || propertyType === 'status' ? ['Option 1', 'Option 2'] : undefined)
       };
-      return { ...prev, [dbId]: { ...db, properties: [...db.properties, newProp] } };
+      return { ...prev, [dbId]: { ...db, properties: [...(db.properties || []), newProp] } };
+    });
+  };
+
+  const updateDatabaseProperty = (dbId, propId, updates) => {
+    setDatabases((prev) => {
+      const db = prev[dbId];
+      if (!db) return prev;
+      const updatedProps = (db.properties || []).map((p) =>
+        p.id === propId ? { ...p, ...updates } : p
+      );
+      return { ...prev, [dbId]: { ...db, properties: updatedProps } };
+    });
+  };
+
+  const deleteDatabaseProperty = (dbId, propId) => {
+    setDatabases((prev) => {
+      const db = prev[dbId];
+      if (!db) return prev;
+      const filteredProps = (db.properties || []).filter((p) => p.id !== propId);
+      // Clean up deleted property from rows
+      const updatedRows = (db.rows || []).map((row) => {
+        const newCells = { ...row.cells };
+        delete newCells[propId];
+        return { ...row, cells: newCells };
+      });
+      return { ...prev, [dbId]: { ...db, properties: filteredProps, rows: updatedRows } };
+    });
+  };
+
+  const togglePropertyVisibility = (dbId, propId) => {
+    setDatabases((prev) => {
+      const db = prev[dbId];
+      if (!db) return prev;
+      const hidden = new Set(db.hiddenProperties || []);
+      if (hidden.has(propId)) {
+        hidden.delete(propId);
+      } else {
+        hidden.add(propId);
+      }
+      return { ...prev, [dbId]: { ...db, hiddenProperties: Array.from(hidden) } };
+    });
+  };
+
+  const updateDatabaseSettings = (dbId, updates) => {
+    setDatabases((prev) => {
+      const db = prev[dbId];
+      if (!db) return prev;
+      return { ...prev, [dbId]: { ...db, ...updates } };
     });
   };
 
@@ -519,11 +720,21 @@ export const WorkspaceProvider = ({ children }) => {
         addBlock,
         deleteBlock,
         moveBlock,
+        turnIntoBlock,
+        duplicateBlock,
+        setBlockColor,
+        insertAiContent,
+        createDatabase,
+        submitFormResponse,
         updateDatabaseRow,
         addDatabaseRow,
         deleteDatabaseRow,
         setDatabaseActiveView,
         addDatabaseProperty,
+        updateDatabaseProperty,
+        deleteDatabaseProperty,
+        togglePropertyVisibility,
+        updateDatabaseSettings,
         toggleTheme,
         applyTemplate,
         exportWorkspaceJSON,

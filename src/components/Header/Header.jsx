@@ -9,7 +9,9 @@ import {
   MoreHorizontal,
   FileDown,
   Trash2,
-  Copy
+  Copy,
+  Lock,
+  Unlock
 } from 'lucide-react';
 import './Header.css';
 
@@ -26,7 +28,8 @@ export const Header = () => {
     setAiAssistantOpen,
     exportPageMarkdown,
     duplicatePage,
-    deletePage
+    deletePage,
+    updatePage
   } = useWorkspace();
 
   const [optionsMenuOpen, setOptionsMenuOpen] = useState(false);
@@ -42,10 +45,24 @@ export const Header = () => {
     curr = curr.parentId ? pages.find((p) => p.id === curr.parentId) : null;
   }
 
-  // Calculate word count
-  const wordCount = currentPage.blocks.reduce((acc, b) => {
-    return acc + (b.content ? b.content.trim().split(/\s+/).filter(Boolean).length : 0);
-  }, 0);
+  // Calculate word and character count immutably
+  const { wordCount, totalChars } = (currentPage.blocks || []).reduce(
+    (acc, b) => {
+      if (!b.content) return acc;
+      const words = b.content.trim().split(/\s+/).filter(Boolean).length;
+      return {
+        wordCount: acc.wordCount + words,
+        totalChars: acc.totalChars + b.content.length
+      };
+    },
+    { wordCount: 0, totalChars: 0 }
+  );
+  const readingTime = Math.max(1, Math.ceil(wordCount / 200));
+
+  const fontStyle = currentPage.fontStyle || 'default';
+  const smallText = !!currentPage.smallText;
+  const fullWidth = !!currentPage.fullWidth;
+  const isLocked = !!currentPage.isLocked;
 
   return (
     <header className="header-container">
@@ -208,7 +225,7 @@ export const Header = () => {
           )}
         </div>
 
-        {/* More Options */}
+        {/* More Options (Notion Full Page Customization Menu) */}
         <div style={{ position: 'relative' }}>
           <button
             className="header-btn"
@@ -220,7 +237,7 @@ export const Header = () => {
 
           {optionsMenuOpen && (
             <div
-              className="dropdown-menu animate-popover"
+              className="dropdown-menu animate-popover page-more-menu"
               style={{
                 position: 'absolute',
                 right: '0',
@@ -229,23 +246,97 @@ export const Header = () => {
                 boxShadow: 'var(--shadow-floating)',
                 borderRadius: 'var(--radius-sm)',
                 border: '1px solid var(--border-color)',
-                padding: '6px',
+                padding: '8px',
                 zIndex: 100,
-                minWidth: '170px'
+                minWidth: '220px'
               }}
               onMouseLeave={() => setOptionsMenuOpen(false)}
             >
+              {/* Style: Font Selector */}
+              <div className="menu-section-header">Style</div>
+              <div className="font-selector-row">
+                <button
+                  className={`font-style-btn ${fontStyle === 'default' ? 'active' : ''}`}
+                  onClick={() => updatePage(currentPage.id, { fontStyle: 'default' })}
+                >
+                  <span className="font-sample sans">Ag</span>
+                  <span className="font-label">Default</span>
+                </button>
+                <button
+                  className={`font-style-btn ${fontStyle === 'serif' ? 'active' : ''}`}
+                  onClick={() => updatePage(currentPage.id, { fontStyle: 'serif' })}
+                >
+                  <span className="font-sample serif">Ag</span>
+                  <span className="font-label">Serif</span>
+                </button>
+                <button
+                  className={`font-style-btn ${fontStyle === 'mono' ? 'active' : ''}`}
+                  onClick={() => updatePage(currentPage.id, { fontStyle: 'mono' })}
+                >
+                  <span className="font-sample mono">Ag</span>
+                  <span className="font-label">Mono</span>
+                </button>
+              </div>
+
+              <div className="menu-divider" />
+
+              {/* Layout Toggles */}
               <div
-                style={{
-                  fontSize: '11px',
-                  color: 'var(--text-muted)',
-                  padding: '4px 8px',
-                  borderBottom: '1px solid var(--border-subtle)',
-                  marginBottom: '4px'
+                className="menu-toggle-item"
+                onClick={() => updatePage(currentPage.id, { smallText: !smallText })}
+              >
+                <span>Small text</span>
+                <div className={`switch-pill ${smallText ? 'on' : ''}`}>
+                  <div className="switch-thumb" />
+                </div>
+              </div>
+
+              <div
+                className="menu-toggle-item"
+                onClick={() => updatePage(currentPage.id, { fullWidth: !fullWidth })}
+              >
+                <span>Full width</span>
+                <div className={`switch-pill ${fullWidth ? 'on' : ''}`}>
+                  <div className="switch-thumb" />
+                </div>
+              </div>
+
+              <div
+                className="menu-toggle-item"
+                onClick={() => updatePage(currentPage.id, { isLocked: !isLocked })}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  {isLocked ? <Lock size={12} color="var(--accent-orange)" /> : <Unlock size={12} />}
+                  <span>Lock page</span>
+                </div>
+                <div className={`switch-pill ${isLocked ? 'on' : ''}`}>
+                  <div className="switch-thumb" />
+                </div>
+              </div>
+
+              <div className="menu-divider" />
+
+              {/* Page Stats */}
+              <div className="menu-stats-box">
+                <div><strong>{wordCount}</strong> words • <strong>{totalChars}</strong> chars</div>
+                <div style={{ color: 'var(--text-muted)', marginTop: '2px' }}>~{readingTime} min read • {currentPage.blocks.length} blocks</div>
+              </div>
+
+              <div className="menu-divider" />
+
+              {/* Actions */}
+              <button
+                className="sidebar-action-item"
+                style={{ fontSize: '12px' }}
+                onClick={() => {
+                  exportPageMarkdown(currentPage.id);
+                  setOptionsMenuOpen(false);
                 }}
               >
-                {wordCount} words • {currentPage.blocks.length} blocks
-              </div>
+                <FileDown size={13} />
+                <span>Export as Markdown</span>
+              </button>
+
               <button
                 className="sidebar-action-item"
                 style={{ fontSize: '12px' }}
@@ -257,6 +348,7 @@ export const Header = () => {
                 <Copy size={13} />
                 <span>Duplicate page</span>
               </button>
+
               <button
                 className="sidebar-action-item"
                 style={{ fontSize: '12px', color: 'var(--accent-red)' }}

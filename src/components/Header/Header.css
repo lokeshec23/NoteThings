@@ -182,3 +182,122 @@
     padding: 2px 2px;
   }
 }
+
+/* Page Options More Menu Styles */
+.page-more-menu {
+  width: 230px;
+}
+
+.menu-section-header {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 4px 6px;
+}
+
+.font-selector-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  padding: 4px;
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-sm);
+  margin-bottom: 6px;
+}
+
+.font-style-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 4px;
+  border-radius: var(--radius-xs);
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.font-style-btn:hover {
+  background-color: var(--bg-hover);
+}
+
+.font-style-btn.active {
+  background-color: var(--bg-card);
+  border-color: var(--border-color);
+  box-shadow: var(--shadow-sm);
+}
+
+.font-sample {
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+.font-sample.sans { font-family: var(--font-sans); font-weight: 600; }
+.font-sample.serif { font-family: 'Lyon-Text', Georgia, serif; font-weight: 600; }
+.font-sample.mono { font-family: var(--font-mono); font-weight: 600; }
+
+.font-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.menu-divider {
+  height: 1px;
+  background-color: var(--border-subtle);
+  margin: 6px 0;
+}
+
+.menu-toggle-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px;
+  font-size: 12px;
+  color: var(--text-primary);
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+}
+
+.menu-toggle-item:hover {
+  background-color: var(--bg-hover);
+}
+
+.switch-pill {
+  width: 28px;
+  height: 16px;
+  border-radius: 9999px;
+  background-color: var(--border-color);
+  position: relative;
+  transition: background-color var(--transition-fast);
+}
+
+.switch-pill.on {
+  background-color: var(--accent-blue);
+}
+
+.switch-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #fff;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: transform var(--transition-fast);
+}
+
+.switch-pill.on .switch-thumb {
+  transform: translateX(12px);
+}
+
+.menu-stats-box {
+  padding: 6px 8px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-xs);
+}
