@@ -4,11 +4,9 @@ import {
   GripVertical,
   Plus,
   Trash2,
-  Copy,
   ChevronRight,
   Check,
   Clipboard,
-  Sparkles,
   ArrowUp,
   ArrowDown
 } from 'lucide-react';
@@ -28,7 +26,6 @@ export const BlockItem = ({
     addBlock,
     deleteBlock,
     moveBlock,
-    duplicatePage,
     setAiAssistantOpen
   } = useWorkspace();
 
@@ -383,7 +380,8 @@ export const BlockItem = ({
               border: '1px solid var(--border-color)',
               padding: '6px',
               zIndex: 100,
-              minWidth: '150px'
+              minWidth: '150px',
+              maxWidth: 'calc(100vw - 32px)'
             }}
             onMouseLeave={() => setMenuOpen(false)}
           >

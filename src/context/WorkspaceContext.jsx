@@ -46,7 +46,12 @@ export const WorkspaceProvider = ({ children }) => {
 
   const [currentPageId, setCurrentPageId] = useState('page-welcome');
   const [currentView, setCurrentView] = useState('editor'); // 'editor' | 'database' | 'trash' | 'templates'
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth < 768;
+    }
+    return false;
+  });
   
   // Theme state: defaults to dark or light
   const [theme, setTheme] = useState(() => {
@@ -162,6 +167,9 @@ export const WorkspaceProvider = ({ children }) => {
   const selectPage = (id) => {
     setCurrentPageId(id);
     setCurrentView('editor');
+    if (typeof window !== 'undefined' && window.innerWidth < 768) {
+      setSidebarCollapsed(true);
+    }
   };
 
   const currentPage = pages.find((p) => p.id === currentPageId) || pages.find((p) => !p.inTrash) || pages[0];
@@ -190,6 +198,9 @@ export const WorkspaceProvider = ({ children }) => {
     setPages((prev) => [...prev, newPage]);
     setCurrentPageId(newId);
     setCurrentView('editor');
+    if (typeof window !== 'undefined' && window.innerWidth < 768) {
+      setSidebarCollapsed(true);
+    }
     return newPage;
   };
 
@@ -395,6 +406,9 @@ export const WorkspaceProvider = ({ children }) => {
     setPages((prev) => [...prev, newPage]);
     setCurrentPageId(newPage.id);
     setTemplatesModalOpen(false);
+    if (typeof window !== 'undefined' && window.innerWidth < 768) {
+      setSidebarCollapsed(true);
+    }
   };
 
   // Export Workspace to JSON
@@ -455,7 +469,7 @@ export const WorkspaceProvider = ({ children }) => {
         setDatabases(parsed.databases);
       }
       alert('Workspace successfully imported!');
-    } catch (e) {
+    } catch (_err) {
       alert('Invalid workspace JSON file.');
     }
   };

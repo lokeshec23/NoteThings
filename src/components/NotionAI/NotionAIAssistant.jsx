@@ -7,7 +7,6 @@ import {
   FileText,
   CheckSquare,
   Lightbulb,
-  Languages,
   Plus,
   Bot
 } from 'lucide-react';
@@ -37,7 +36,14 @@ export const NotionAIAssistant = () => {
     if (aiAssistantOpen) {
       conversationEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [messages, aiAssistantOpen]);
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') setAiAssistantOpen(false);
+    };
+    if (aiAssistantOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+      return () => window.removeEventListener('keydown', handleKeyDown);
+    }
+  }, [messages, aiAssistantOpen, setAiAssistantOpen]);
 
   // Stream text character-by-character for realistic AI experience
   const streamResponse = (fullText) => {
@@ -83,10 +89,6 @@ export const NotionAIAssistant = () => {
       const qLower = query.toLowerCase();
 
       if (qLower.includes('summarize')) {
-        const textBlocks = (currentPage.blocks || [])
-          .filter((b) => b.content)
-          .map((b) => b.content)
-          .join(' ');
         responseText = `### Executive Summary: ${currentPage.title}\n\n` +
           `• **Core Focus**: This document covers "${currentPage.title}" with ${currentPage.blocks.length} organized content blocks.\n` +
           `• **Key Elements**: Contains interactive checklists, code architecture definitions, and strategic workflows.\n` +
@@ -140,7 +142,6 @@ export const NotionAIAssistant = () => {
   };
 
   const handleInsertIntoPage = (text) => {
-    const lines = text.split('\n').filter(Boolean);
     const lastIdx = currentPage.blocks.length - 1;
 
     // Insert as callout or block
@@ -155,7 +156,13 @@ export const NotionAIAssistant = () => {
   if (!aiAssistantOpen) return null;
 
   return (
-    <div className={`ai-drawer-container animate-fade-in`}>
+    <>
+      <div
+        className="ai-drawer-backdrop"
+        onClick={() => setAiAssistantOpen(false)}
+        aria-label="Close NoteThings AI drawer"
+      />
+      <aside className="ai-drawer-container animate-fade-in" aria-label="NoteThings AI Assistant">
       {/* Header */}
       <div className="ai-drawer-header">
         <div className="ai-header-title">
@@ -253,6 +260,7 @@ export const NotionAIAssistant = () => {
           <Send size={14} />
         </button>
       </div>
-    </div>
-  );
+    </aside>
+  </>
+);
 };

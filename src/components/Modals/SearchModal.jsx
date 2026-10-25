@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useWorkspace } from '../../context/WorkspaceContext';
-import { Search, X, FileText, ChevronRight, Clock } from 'lucide-react';
+import { Search, X, ChevronRight, Clock } from 'lucide-react';
 
 export const SearchModal = () => {
   const {
@@ -16,8 +16,11 @@ export const SearchModal = () => {
 
   useEffect(() => {
     if (searchModalOpen) {
-      setTimeout(() => inputRef.current?.focus(), 50);
-      setSelectedIndex(0);
+      const timer = setTimeout(() => {
+        inputRef.current?.focus();
+        setSelectedIndex(0);
+      }, 50);
+      return () => clearTimeout(timer);
     }
   }, [searchModalOpen]);
 
@@ -68,15 +71,17 @@ export const SearchModal = () => {
         display: 'flex',
         alignItems: 'flex-start',
         justifyContent: 'center',
-        paddingTop: '12vh'
+        paddingTop: 'clamp(20px, 8vh, 80px)',
+        paddingLeft: '12px',
+        paddingRight: '12px'
       }}
       onClick={() => setSearchModalOpen(false)}
     >
       <div
         className="search-modal-card animate-popover"
         style={{
-          width: '560px',
-          maxWidth: '92vw',
+          width: 'min(560px, calc(100vw - 24px))',
+          maxWidth: 'calc(100vw - 24px)',
           backgroundColor: 'var(--bg-modal)',
           borderRadius: 'var(--radius-lg)',
           boxShadow: 'var(--shadow-floating)',

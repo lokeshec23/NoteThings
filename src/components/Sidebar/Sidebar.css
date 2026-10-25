@@ -1,6 +1,7 @@
 .sidebar-container {
   width: var(--sidebar-width);
   height: 100vh;
+  height: 100dvh;
   background-color: var(--bg-sidebar);
   border-right: 1px solid var(--border-color);
   display: flex;
@@ -17,6 +18,32 @@
   transform: translateX(-100%);
   border-right: none;
   overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .sidebar-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    height: 100%;
+    height: 100dvh;
+    width: min(85vw, 290px);
+    max-width: calc(100vw - 32px);
+    z-index: 100;
+    box-shadow: var(--shadow-floating);
+    transform: translateX(0);
+    padding-top: var(--safe-top);
+    padding-bottom: var(--safe-bottom);
+  }
+
+  .sidebar-container.collapsed {
+    width: min(85vw, 290px);
+    max-width: calc(100vw - 32px);
+    transform: translateX(-100%);
+    box-shadow: none;
+    pointer-events: none;
+  }
 }
 
 /* Workspace Header */
@@ -266,4 +293,49 @@
 .new-page-btn:hover {
   background-color: var(--bg-hover);
   color: var(--text-primary);
+}
+
+@media (max-width: 768px) {
+  .sidebar-header {
+    padding: 16px 14px 10px 14px;
+  }
+
+  .sidebar-action-item {
+    padding: 7px 10px;
+    font-size: 13.5px;
+    min-height: 36px;
+  }
+
+  .page-tree-item {
+    padding-top: 6px;
+    padding-bottom: 6px;
+    min-height: 34px;
+    font-size: 13.5px;
+  }
+
+  .page-actions-hover {
+    display: flex;
+    opacity: 0.65;
+  }
+
+  .page-action-btn {
+    width: 22px;
+    height: 22px;
+  }
+
+  .section-add-btn {
+    padding: 5px;
+  }
+
+  .new-page-btn {
+    padding: 8px 12px;
+    font-size: 13.5px;
+  }
+}
+
+@media (hover: none) {
+  .page-actions-hover {
+    display: flex;
+    opacity: 0.7;
+  }
 }

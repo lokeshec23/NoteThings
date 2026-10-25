@@ -164,9 +164,7 @@ export const SlashMenu = ({ query = '', onSelect, onClose, position = { top: 0, 
       cmd.category.toLowerCase().includes(cleanQuery)
   );
 
-  useEffect(() => {
-    setSelectedIndex(0);
-  }, [query]);
+  const activeIndex = Math.min(selectedIndex, Math.max(0, filtered.length - 1));
 
   // Keyboard navigation
   useEffect(() => {
@@ -179,8 +177,8 @@ export const SlashMenu = ({ query = '', onSelect, onClose, position = { top: 0, 
         setSelectedIndex((prev) => (prev - 1 + filtered.length) % (filtered.length || 1));
       } else if (e.key === 'Enter') {
         e.preventDefault();
-        if (filtered[selectedIndex]) {
-          onSelect(filtered[selectedIndex].action);
+        if (filtered[activeIndex]) {
+          onSelect(filtered[activeIndex].action);
         }
       } else if (e.key === 'Escape') {
         e.preventDefault();
@@ -190,7 +188,7 @@ export const SlashMenu = ({ query = '', onSelect, onClose, position = { top: 0, 
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [filtered, selectedIndex, onSelect, onClose]);
+  }, [filtered, activeIndex, onSelect, onClose]);
 
   if (filtered.length === 0) {
     return (
@@ -202,9 +200,6 @@ export const SlashMenu = ({ query = '', onSelect, onClose, position = { top: 0, 
     );
   }
 
-  // Group by category
-  let lastCategory = '';
-
   return (
     <div
       ref={menuRef}
@@ -212,9 +207,8 @@ export const SlashMenu = ({ query = '', onSelect, onClose, position = { top: 0, 
       style={{ top: position.top, left: position.left }}
     >
       {filtered.map((cmd, idx) => {
-        const showCategory = cmd.category !== lastCategory;
-        lastCategory = cmd.category;
-        const isSelected = idx === selectedIndex;
+        const showCategory = idx === 0 || filtered[idx - 1].category !== cmd.category;
+        const isSelected = idx === activeIndex;
 
         return (
           <React.Fragment key={cmd.id}>

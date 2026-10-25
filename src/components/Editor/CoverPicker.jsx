@@ -9,8 +9,9 @@ export const CoverPicker = ({ onSelect, onClose, currentCover }) => {
       style={{
         position: 'absolute',
         top: '60px',
-        right: '40px',
-        width: '320px',
+        right: '12px',
+        width: 'min(320px, calc(100vw - 24px))',
+        maxWidth: 'calc(100vw - 24px)',
         backgroundColor: 'var(--bg-floating)',
         border: '1px solid var(--border-color)',
         borderRadius: 'var(--radius-md)',

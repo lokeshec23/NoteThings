@@ -9,8 +9,9 @@ export const IconPicker = ({ onSelect, onClose, onRandomize }) => {
       style={{
         position: 'absolute',
         top: '60px',
-        left: '20px',
-        width: '260px',
+        left: '0px',
+        width: 'min(280px, calc(100vw - 24px))',
+        maxWidth: 'calc(100vw - 24px)',
         backgroundColor: 'var(--bg-floating)',
         border: '1px solid var(--border-color)',
         borderRadius: 'var(--radius-md)',

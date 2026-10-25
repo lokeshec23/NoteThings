@@ -16,15 +16,26 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 14px;
+  padding: 8px 12px;
   border-bottom: 1px solid var(--border-color);
   background-color: var(--bg-secondary);
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .view-tabs {
   display: flex;
   align-items: center;
   gap: 2px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  max-width: 100%;
+  padding-bottom: 2px;
+}
+
+.view-tabs::-webkit-scrollbar {
+  display: none;
 }
 
 .view-tab {
@@ -37,6 +48,8 @@
   font-weight: 500;
   color: var(--text-secondary);
   transition: all var(--transition-fast);
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .view-tab:hover {
@@ -54,7 +67,8 @@
 .database-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  margin-left: auto;
 }
 
 .db-search-input {
@@ -63,12 +77,12 @@
   border: 1px solid var(--border-color);
   background-color: var(--bg-primary);
   font-size: 12px;
-  width: 140px;
+  width: 130px;
   transition: width var(--transition-fast);
 }
 
 .db-search-input:focus {
-  width: 190px;
+  width: 170px;
   border-color: var(--accent-blue);
 }
 
@@ -80,10 +94,38 @@
   font-size: 12px;
   font-weight: 500;
   gap: 4px;
+  flex-shrink: 0;
 }
 
 .db-new-btn:hover {
   background-color: var(--accent-blue-hover);
+}
+
+@media (max-width: 600px) {
+  .database-header {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 8px 10px;
+    gap: 8px;
+  }
+
+  .view-tabs {
+    width: 100%;
+  }
+
+  .database-actions {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .db-search-input {
+    flex: 1;
+    width: auto !important;
+  }
+
+  .db-search-input:focus {
+    width: auto !important;
+  }
 }
 
 /* TABLE VIEW */
@@ -165,15 +207,16 @@
 /* BOARD (KANBAN) VIEW */
 .db-board-wrapper {
   display: flex;
-  gap: 16px;
-  padding: 16px;
+  gap: 12px;
+  padding: 12px;
   overflow-x: auto;
-  min-height: 380px;
+  -webkit-overflow-scrolling: touch;
+  min-height: 360px;
   background-color: var(--bg-secondary);
 }
 
 .board-column {
-  flex: 0 0 250px;
+  flex: 0 0 clamp(220px, 75vw, 250px);
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -183,14 +226,14 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 4px 8px;
+  padding: 4px 6px;
 }
 
 .board-card {
   background-color: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
-  padding: 12px;
+  padding: 10px 12px;
   box-shadow: var(--shadow-sm);
   cursor: pointer;
   transition: transform var(--transition-fast), box-shadow var(--transition-fast);
@@ -238,17 +281,19 @@
 .db-list-wrapper {
   display: flex;
   flex-direction: column;
-  padding: 8px 12px;
+  padding: 6px 10px;
 }
 
 .list-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 12px;
+  padding: 8px 10px;
   border-radius: var(--radius-xs);
   transition: background-color var(--transition-fast);
   border-bottom: 1px solid var(--border-subtle);
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .list-row:hover {
@@ -262,14 +307,24 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  min-width: 140px;
+  flex: 1 1 180px;
+}
+
+.list-row-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-left: auto;
 }
 
 /* GALLERY VIEW */
 .db-gallery-wrapper {
   display: grid;
-  grid-templateColumns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 14px;
-  padding: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
+  gap: 12px;
+  padding: 12px;
 }
 
 .gallery-card {
@@ -295,7 +350,7 @@
 }
 
 .gallery-content {
-  padding: 12px;
+  padding: 10px 12px;
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -303,13 +358,16 @@
 
 /* CALENDAR VIEW */
 .db-calendar-wrapper {
-  padding: 16px;
+  padding: 12px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .calendar-grid {
   display: grid;
-  grid-templateColumns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, 1fr);
   gap: 4px;
+  min-width: 480px;
 }
 
 .calendar-day-header {
@@ -322,7 +380,7 @@
 }
 
 .calendar-cell {
-  min-height: 80px;
+  min-height: 70px;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-xs);
   padding: 4px;

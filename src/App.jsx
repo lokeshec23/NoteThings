@@ -10,13 +10,25 @@ import { TrashModal } from './components/Modals/TrashModal';
 import { AuthModal } from './components/Modals/AuthModal';
 
 const MainLayout = () => {
+  const { sidebarCollapsed, setSidebarCollapsed } = useWorkspace();
+
   return (
     <div className="app-container">
+      {/* Mobile Backdrop when Sidebar Drawer is Open */}
+      {!sidebarCollapsed && (
+        <div
+          className="sidebar-backdrop"
+          onClick={() => setSidebarCollapsed(true)}
+          aria-label="Close sidebar"
+        />
+      )}
+
       <Sidebar />
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden', position: 'relative' }}>
+
+      <main className="main-content-layout">
         <Header />
         <Editor />
-      </div>
+      </main>
 
       {/* Notion AI Drawer */}
       <NotionAIAssistant />

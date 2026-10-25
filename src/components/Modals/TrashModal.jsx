@@ -11,6 +11,16 @@ export const TrashModal = () => {
     permanentlyDeletePage
   } = useWorkspace();
 
+  React.useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') setTrashModalOpen(false);
+    };
+    if (trashModalOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+      return () => window.removeEventListener('keydown', handleKeyDown);
+    }
+  }, [trashModalOpen]);
+
   if (!trashModalOpen) return null;
 
   const trashPages = pages.filter((p) => p.inTrash);
@@ -26,15 +36,16 @@ export const TrashModal = () => {
         zIndex: 2000,
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        padding: '12px'
       }}
       onClick={() => setTrashModalOpen(false)}
     >
       <div
         className="animate-popover"
         style={{
-          width: '500px',
-          maxWidth: '92vw',
+          width: 'min(500px, calc(100vw - 24px))',
+          maxWidth: 'calc(100vw - 24px)',
           backgroundColor: 'var(--bg-modal)',
           borderRadius: 'var(--radius-lg)',
           boxShadow: 'var(--shadow-floating)',
@@ -53,7 +64,7 @@ export const TrashModal = () => {
           </button>
         </div>
 
-        <div style={{ padding: '10px 14px', maxHeight: '360px', overflowY: 'auto' }}>
+        <div style={{ padding: '10px 14px', maxHeight: 'min(360px, 60vh)', overflowY: 'auto' }}>
           {trashPages.length === 0 ? (
             <div style={{ padding: '32px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '13px' }}>
               Trash is empty.
@@ -68,18 +79,22 @@ export const TrashModal = () => {
                   justifyContent: 'space-between',
                   padding: '8px 10px',
                   borderRadius: 'var(--radius-sm)',
-                  borderBottom: '1px solid var(--border-subtle)'
+                  borderBottom: '1px solid var(--border-subtle)',
+                  gap: '8px',
+                  flexWrap: 'wrap'
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: '1 1 140px', minWidth: '120px' }}>
                   <span>{page.icon || '📄'}</span>
-                  <span style={{ fontSize: '13px', fontWeight: 500 }}>{page.title || 'Untitled'}</span>
+                  <span style={{ fontSize: '13px', fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {page.title || 'Untitled'}
+                  </span>
                 </div>
 
-                <div style={{ display: 'flex', gap: '4px' }}>
+                <div style={{ display: 'flex', gap: '6px', marginLeft: 'auto' }}>
                   <button
                     className="sidebar-action-item"
-                    style={{ fontSize: '11px', padding: '3px 8px', width: 'auto' }}
+                    style={{ fontSize: '11px', padding: '4px 8px', width: 'auto' }}
                     onClick={() => restorePage(page.id)}
                     title="Restore page"
                   >
@@ -88,7 +103,7 @@ export const TrashModal = () => {
                   </button>
                   <button
                     className="sidebar-action-item"
-                    style={{ fontSize: '11px', padding: '3px 8px', color: 'var(--accent-red)', width: 'auto' }}
+                    style={{ fontSize: '11px', padding: '4px 8px', color: 'var(--accent-red)', width: 'auto' }}
                     onClick={() => permanentlyDeletePage(page.id)}
                     title="Delete permanently"
                   >

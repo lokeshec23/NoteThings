@@ -2,12 +2,23 @@
    Notion AI Assistant Drawer & Dialog Styles
    ========================================================================== */
 
+.ai-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(2px);
+  z-index: 999;
+  animation: fadeIn 0.2s ease-out;
+}
+
 .ai-drawer-container {
   position: fixed;
   top: 0;
   right: 0;
   width: 380px;
+  max-width: 100vw;
   height: 100vh;
+  height: 100dvh;
   background-color: var(--bg-modal);
   border-left: 1px solid var(--border-color);
   box-shadow: var(--shadow-lg);
@@ -16,6 +27,8 @@
   flex-direction: column;
   transition: transform var(--transition-normal);
   user-select: none;
+  padding-top: var(--safe-top);
+  padding-bottom: var(--safe-bottom);
 }
 
 .ai-drawer-container.closed {
@@ -69,7 +82,7 @@
 
 .ai-tools-grid {
   display: grid;
-  grid-templateColumns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 6px;
 }
 
@@ -216,4 +229,35 @@
 .ai-send-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+@media (max-width: 480px) {
+  .ai-drawer-container {
+    width: 100vw;
+    border-left: none;
+  }
+
+  .ai-tools-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ai-bubble {
+    max-width: 95%;
+  }
+
+  .ai-drawer-header {
+    padding: 12px 14px;
+  }
+
+  .ai-quick-tools {
+    padding: 10px 14px;
+  }
+
+  .ai-conversation-body {
+    padding: 14px;
+  }
+
+  .ai-input-footer {
+    padding: 10px 14px;
+  }
 }

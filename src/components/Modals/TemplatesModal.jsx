@@ -6,6 +6,16 @@ import { X, LayoutTemplate, Plus } from 'lucide-react';
 export const TemplatesModal = () => {
   const { templatesModalOpen, setTemplatesModalOpen, applyTemplate } = useWorkspace();
 
+  React.useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') setTemplatesModalOpen(false);
+    };
+    if (templatesModalOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+      return () => window.removeEventListener('keydown', handleKeyDown);
+    }
+  }, [templatesModalOpen]);
+
   if (!templatesModalOpen) return null;
 
   return (
@@ -19,15 +29,16 @@ export const TemplatesModal = () => {
         zIndex: 2000,
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        padding: '12px'
       }}
       onClick={() => setTemplatesModalOpen(false)}
     >
       <div
         className="animate-popover"
         style={{
-          width: '640px',
-          maxWidth: '92vw',
+          width: 'min(640px, calc(100vw - 24px))',
+          maxWidth: 'calc(100vw - 24px)',
           backgroundColor: 'var(--bg-modal)',
           borderRadius: 'var(--radius-lg)',
           boxShadow: 'var(--shadow-floating)',
@@ -36,7 +47,7 @@ export const TemplatesModal = () => {
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px', borderBottom: '1px solid var(--border-color)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 18px', borderBottom: '1px solid var(--border-color)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <LayoutTemplate size={18} color="var(--accent-purple)" />
             <span style={{ fontSize: '15px', fontWeight: 600 }}>Workspace Templates Gallery</span>
@@ -46,7 +57,7 @@ export const TemplatesModal = () => {
           </button>
         </div>
 
-        <div style={{ padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: '12px', maxHeight: '420px', overflowY: 'auto' }}>
+        <div style={{ padding: '14px 16px', display: 'flex', flexDirection: 'column', gap: '10px', maxHeight: 'min(420px, 65vh)', overflowY: 'auto' }}>
           {TEMPLATES.map((tmpl) => (
             <div
               key={tmpl.id}
@@ -54,17 +65,19 @@ export const TemplatesModal = () => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                padding: '14px 16px',
+                padding: '12px 14px',
                 borderRadius: 'var(--radius-md)',
                 border: '1px solid var(--border-color)',
                 backgroundColor: 'var(--bg-card)',
-                transition: 'border-color var(--transition-fast)'
+                transition: 'border-color var(--transition-fast)',
+                gap: '12px',
+                flexWrap: 'wrap'
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', flex: '1 1 200px', minWidth: '150px' }}>
                 <span style={{ fontSize: '24px' }}>{tmpl.icon}</span>
                 <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                     <span style={{ fontSize: '14px', fontWeight: 600 }}>{tmpl.title}</span>
                     <span className="badge badge-blue">{tmpl.category}</span>
                   </div>
@@ -76,7 +89,7 @@ export const TemplatesModal = () => {
 
               <button
                 className="db-new-btn"
-                style={{ padding: '6px 12px', whiteSpace: 'nowrap' }}
+                style={{ padding: '6px 12px', whiteSpace: 'nowrap', marginLeft: 'auto' }}
                 onClick={() => applyTemplate(tmpl.id)}
               >
                 <Plus size={13} />

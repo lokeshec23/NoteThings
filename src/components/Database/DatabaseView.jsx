@@ -7,11 +7,8 @@ import {
   LayoutGrid,
   Calendar as CalendarIcon,
   Plus,
-  Search,
   Trash2,
-  Calendar,
-  User,
-  Tag
+  User
 } from 'lucide-react';
 import './DatabaseView.css';
 
@@ -182,7 +179,7 @@ export const DatabaseView = ({ databaseId = 'db-roadmap' }) => {
               </span>
             </div>
 
-            <div style={{ display: 'flex', flexD: 'column', flexDirection: 'column', gap: '8px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {columnRows.map((card) => (
                 <div key={card.id} className="board-card">
                   <div className="board-card-title">{card.cells['prop-title']}</div>
@@ -231,7 +228,7 @@ export const DatabaseView = ({ databaseId = 'db-roadmap' }) => {
             <span>📄</span>
             <span>{row.cells['prop-title']}</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div className="list-row-meta">
             <span
               className={`status-pill ${getStatusClass(row.cells['prop-status'])}`}
               onClick={() => handleCycleStatus(row.id, row.cells['prop-status'])}

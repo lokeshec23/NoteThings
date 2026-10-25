@@ -8,6 +8,16 @@ export const AuthModal = () => {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
 
+  React.useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') setAuthModalOpen(false);
+    };
+    if (authModalOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+      return () => window.removeEventListener('keydown', handleKeyDown);
+    }
+  }, [authModalOpen]);
+
   if (!authModalOpen) return null;
 
   const handleGoogleSignIn = async () => {
@@ -38,7 +48,7 @@ export const AuthModal = () => {
         setLoading(false);
         return;
       }
-    } catch (e) {
+    } catch (_e) {
       // Continue to local guest fallback
     }
 
@@ -73,21 +83,22 @@ export const AuthModal = () => {
         zIndex: 2000,
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        padding: '12px'
       }}
       onClick={() => setAuthModalOpen(false)}
     >
       <div
         className="animate-popover"
         style={{
-          width: '420px',
-          maxWidth: '92vw',
+          width: 'min(420px, calc(100vw - 24px))',
+          maxWidth: 'calc(100vw - 24px)',
           backgroundColor: 'var(--bg-modal)',
           borderRadius: 'var(--radius-lg)',
           boxShadow: 'var(--shadow-floating)',
           border: '1px solid var(--border-color)',
           overflow: 'hidden',
-          padding: '24px'
+          padding: 'clamp(16px, 4vw, 24px)'
         }}
         onClick={(e) => e.stopPropagation()}
       >
