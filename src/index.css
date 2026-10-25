@@ -1,0 +1,284 @@
+/* ==========================================================================
+   Notion AI - Design System & Global Styles
+   Matches Notion's signature typography, micro-interactions, & aesthetics
+   ========================================================================== */
+
+:root {
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* --- LIGHT THEME TOKENS --- */
+  --bg-primary: #ffffff;
+  --bg-secondary: #fbfbfa;
+  --bg-sidebar: #f7f6f3;
+  --bg-hover: #efefed;
+  --bg-active: #e8e8e5;
+  --bg-card: #ffffff;
+  --bg-card-hover: #fcfcfb;
+  --bg-modal: #ffffff;
+  --bg-floating: #ffffff;
+  --bg-code: #f7f6f3;
+
+  --text-primary: #37352f;
+  --text-secondary: #787774;
+  --text-muted: #9b9a97;
+  --text-dim: #b8b6b2;
+  --text-placeholder: #b0afab;
+
+  --border-color: #e9e9e7;
+  --border-subtle: #f1f1ef;
+  --border-focus: #2383e2;
+
+  --accent-blue: #2383e2;
+  --accent-blue-hover: #1b6fc2;
+  --accent-blue-bg: #e8f3fc;
+  --accent-purple: #9065b0;
+  --accent-purple-bg: #f6f0fc;
+  --accent-green: #448361;
+  --accent-green-bg: #edf6f0;
+  --accent-orange: #d9730d;
+  --accent-orange-bg: #fcf3ea;
+  --accent-red: #e03e3e;
+  --accent-red-bg: #fdeeee;
+  --accent-yellow: #cb912f;
+  --accent-yellow-bg: #fbf6ec;
+
+  /* Notion AI Special Gradients */
+  --ai-gradient-text: linear-gradient(135deg, #8a2be2 0%, #e03597 50%, #2383e2 100%);
+  --ai-gradient-border: linear-gradient(135deg, #a855f7, #ec4899, #3b82f6);
+  --ai-bg-subtle: rgba(144, 101, 176, 0.08);
+
+  /* Elevation Shadows */
+  --shadow-sm: 0 1px 2px rgba(15, 15, 15, 0.05);
+  --shadow-md: 0 4px 12px rgba(15, 15, 15, 0.08);
+  --shadow-lg: 0 12px 28px rgba(15, 15, 15, 0.12);
+  --shadow-floating: rgba(15, 15, 15, 0.05) 0px 0px 0px 1px, rgba(15, 15, 15, 0.1) 0px 3px 6px, rgba(15, 15, 15, 0.2) 0px 9px 24px;
+  --shadow-popover: 0 6px 20px rgba(0, 0, 0, 0.15);
+
+  --radius-xs: 3px;
+  --radius-sm: 5px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-pill: 9999px;
+
+  --sidebar-width: 250px;
+  --header-height: 48px;
+  --transition-fast: 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-normal: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* --- DARK THEME OVERRIDES --- */
+[data-theme='dark'] {
+  --bg-primary: #191919;
+  --bg-secondary: #202020;
+  --bg-sidebar: #1f1f1f;
+  --bg-hover: #2c2c2c;
+  --bg-active: #373737;
+  --bg-card: #202020;
+  --bg-card-hover: #262626;
+  --bg-modal: #252525;
+  --bg-floating: #252525;
+  --bg-code: #252525;
+
+  --text-primary: #e6e6e6;
+  --text-secondary: #a3a29e;
+  --text-muted: #757470;
+  --text-dim: #545350;
+  --text-placeholder: #5a5956;
+
+  --border-color: #2e2e2e;
+  --border-subtle: #262626;
+  --border-focus: #3b82f6;
+
+  --accent-blue: #3b82f6;
+  --accent-blue-hover: #2563eb;
+  --accent-blue-bg: rgba(59, 130, 246, 0.15);
+  --accent-purple: #a855f7;
+  --accent-purple-bg: rgba(168, 85, 247, 0.15);
+  --accent-green: #22c55e;
+  --accent-green-bg: rgba(34, 197, 94, 0.15);
+  --accent-orange: #f97316;
+  --accent-orange-bg: rgba(249, 115, 22, 0.15);
+  --accent-red: #ef4444;
+  --accent-red-bg: rgba(239, 68, 68, 0.15);
+  --accent-yellow: #eab308;
+  --accent-yellow-bg: rgba(234, 179, 8, 0.15);
+
+  --ai-gradient-text: linear-gradient(135deg, #c084fc 0%, #f472b6 50%, #60a5fa 100%);
+  --ai-bg-subtle: rgba(168, 85, 247, 0.12);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.5);
+  --shadow-floating: rgba(0, 0, 0, 0.4) 0px 0px 0px 1px, rgba(0, 0, 0, 0.3) 0px 3px 6px, rgba(0, 0, 0, 0.4) 0px 9px 24px;
+  --shadow-popover: 0 6px 20px rgba(0, 0, 0, 0.45);
+}
+
+/* --- RESET & BASE --- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(120, 119, 116, 0.25);
+  border-radius: var(--radius-pill);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(120, 119, 116, 0.45);
+}
+
+/* Global Typography & Elements */
+input, textarea, button, select {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  border: none;
+  background: transparent;
+  outline: none;
+}
+
+button {
+  cursor: pointer;
+  user-select: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Layout Core */
+.app-container {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--bg-primary);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Selection */
+::selection {
+  background-color: rgba(35, 131, 226, 0.28);
+}
+
+/* Micro Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideDownFade {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes pulseSubtle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out forwards;
+}
+
+.animate-popover {
+  animation: slideDownFade 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-pulse {
+  animation: pulseSubtle 1.8s infinite ease-in-out;
+}
+
+/* Tooltip & Badge Helpers */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 7px;
+  font-size: 11px;
+  font-weight: 500;
+  border-radius: var(--radius-xs);
+  line-height: 1.3;
+}
+
+.badge-blue { background: var(--accent-blue-bg); color: var(--accent-blue); }
+.badge-purple { background: var(--accent-purple-bg); color: var(--accent-purple); }
+.badge-green { background: var(--accent-green-bg); color: var(--accent-green); }
+.badge-orange { background: var(--accent-orange-bg); color: var(--accent-orange); }
+.badge-red { background: var(--accent-red-bg); color: var(--accent-red); }
+.badge-yellow { background: var(--accent-yellow-bg); color: var(--accent-yellow); }
+.badge-gray { background: var(--bg-hover); color: var(--text-secondary); }
+
+/* Notion AI Glow Effects */
+.ai-sparkle-text {
+  background: var(--ai-gradient-text);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 600;
+}
+
+.ai-sparkle-box {
+  position: relative;
+  border: 1px solid transparent;
+  background-clip: padding-box;
+}
+
+.ai-sparkle-box::after {
+  content: '';
+  position: absolute;
+  top: -1px; bottom: -1px; left: -1px; right: -1px;
+  background: var(--ai-gradient-border);
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0.6;
+}
